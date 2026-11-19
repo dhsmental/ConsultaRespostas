@@ -162,7 +162,7 @@
         const listaTrilhas = document.getElementById('listaTrilhas');
         listaTrilhas.innerHTML = data.trilhas.map(item => `
           <div class="trilha-item">
-            <div class="trilha-titulo">${escaparHtml(item.trilha)}</div>
+            <div class="trilha-titulo">${escaparHtml(item.titulo)}</div>
             <div>${item.resposta
               ? escaparHtml(item.resposta).replace(/\n/g, '<br>')
               : '<span class="sem-resposta">Sem resposta registrada</span>'}</div>
