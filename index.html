@@ -47,11 +47,11 @@
       margin-bottom: 16px;
       line-height: 1.6;
     }
-    .trilha-item, .obs-item {
+    .trilha-item {
       border-top: 1px solid #eee;
       padding: 12px 0;
     }
-    .trilha-titulo, .obs-titulo {
+    .trilha-titulo {
       font-weight: bold;
       color: #2e6b3e;
       margin-bottom: 4px;
@@ -99,31 +99,11 @@
       <textarea id="campoMensagem" rows="4" placeholder="Digite aqui caso queira registrar algo..."></textarea>
       <button onclick="salvarMensagem()">Salvar mensagem</button>
       <div id="statusMsg"></div>
-
-      <div id="historicoObservacoes" style="margin-top: 18px;"></div>
     </div>
   </div>
 
   <script>
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwo-UrZJZCJwoodjO7q7rPCEsJuI2THyLg4DheLEv2FEQCFKqqL6sFfTRVRRsUxM18P/exec';
-
-    function renderizarObservacoes(observacoes) {
-      const container = document.getElementById('historicoObservacoes');
-      if (!observacoes || observacoes.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
-      container.innerHTML = `
-        <h4>Observações já registradas</h4>
-        ${observacoes.map((obs, idx) => `
-          <div class="obs-item">
-            <div class="obs-titulo">Registro ${idx + 1}</div>
-            <div>${escaparHtml(obs.texto).replace(/\n/g, '<br>')}</div>
-          </div>
-        `).join('')}
-      `;
-    }
 
     async function buscarEmail() {
       const email = document.getElementById('emailInput').value.trim();
@@ -167,7 +147,6 @@
         `).join('');
 
         document.getElementById('campoMensagem').value = '';
-        renderizarObservacoes(data.observacoes || []);
       } catch (err) {
         console.error(err);
         aviso.innerHTML = '<span style="color:#b00020;">Erro ao consultar os dados.</span>';
@@ -199,10 +178,7 @@
         if (data.sucesso) {
           campo.value = '';
           statusMsg.style.color = '#2e6b3e';
-          statusMsg.textContent = `Mensagem salva com sucesso (coluna ${data.coluna}).`;
-          await buscarEmail();
-          document.getElementById('statusMsg').style.color = '#2e6b3e';
-          document.getElementById('statusMsg').textContent = `Mensagem salva com sucesso (coluna ${data.coluna}).`;
+          statusMsg.textContent = 'Mensagem salva';
         } else {
           statusMsg.style.color = '#b00020';
           statusMsg.textContent = 'Não foi possível salvar a mensagem.';
