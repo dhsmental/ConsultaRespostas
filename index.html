@@ -47,11 +47,11 @@
       margin-bottom: 16px;
       line-height: 1.6;
     }
-    .trilha-item {
+    .trilha-item, .obs-item {
       border-top: 1px solid #eee;
       padding: 12px 0;
     }
-    .trilha-titulo {
+    .trilha-titulo, .obs-titulo {
       font-weight: bold;
       color: #2e6b3e;
       margin-bottom: 4px;
@@ -95,15 +95,35 @@
     <div id="listaTrilhas"></div>
 
     <div style="margin-top: 20px; border-top: 2px solid #eee; padding-top: 16px;">
-      <label for="campoMensagem"><strong>Escrever / atualizar mensagem ou observação:</strong></label>
+      <label for="campoMensagem"><strong>Adicionar nova observação ou mensagem:</strong></label>
       <textarea id="campoMensagem" rows="4" placeholder="Digite aqui caso queira registrar algo..."></textarea>
       <button onclick="salvarMensagem()">Salvar mensagem</button>
       <div id="statusMsg"></div>
+
+      <div id="historicoObservacoes" style="margin-top: 18px;"></div>
     </div>
   </div>
 
   <script>
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwo-UrZJZCJwoodjO7q7rPCEsJuI2THyLg4DheLEv2FEQCFKqqL6sFfTRVRRsUxM18P/exec';
+
+    function renderizarObservacoes(observacoes) {
+      const container = document.getElementById('historicoObservacoes');
+      if (!observacoes || observacoes.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <h4>Observações já registradas</h4>
+        ${observacoes.map((obs, idx) => `
+          <div class="obs-item">
+            <div class="obs-titulo">Registro ${idx + 1}</div>
+            <div>${escaparHtml(obs.texto).replace(/\n/g, '<br>')}</div>
+          </div>
+        `).join('')}
+      `;
+    }
 
     async function buscarEmail() {
       const email = document.getElementById('emailInput').value.trim();
@@ -146,7 +166,8 @@
           </div>
         `).join('');
 
-        document.getElementById('campoMensagem').value = data.observacao || '';
+        document.getElementById('campoMensagem').value = '';
+        renderizarObservacoes(data.observacoes || []);
       } catch (err) {
         console.error(err);
         aviso.innerHTML = '<span style="color:#b00020;">Erro ao consultar os dados.</span>';
@@ -155,8 +176,15 @@
 
     async function salvarMensagem() {
       const email = document.getElementById('emailInput').value.trim();
-      const mensagem = document.getElementById('campoMensagem').value;
+      const campo = document.getElementById('campoMensagem');
+      const mensagem = campo.value.trim();
       const statusMsg = document.getElementById('statusMsg');
+
+      if (!mensagem) {
+        statusMsg.style.color = '#b00020';
+        statusMsg.textContent = 'Digite uma mensagem antes de salvar.';
+        return;
+      }
 
       statusMsg.style.color = '#333';
       statusMsg.textContent = 'Salvando...';
@@ -169,8 +197,12 @@
         const data = await resp.json();
 
         if (data.sucesso) {
+          campo.value = '';
           statusMsg.style.color = '#2e6b3e';
-          statusMsg.textContent = 'Mensagem salva na planilha com sucesso.';
+          statusMsg.textContent = `Mensagem salva com sucesso (coluna ${data.coluna}).`;
+          await buscarEmail();
+          document.getElementById('statusMsg').style.color = '#2e6b3e';
+          document.getElementById('statusMsg').textContent = `Mensagem salva com sucesso (coluna ${data.coluna}).`;
         } else {
           statusMsg.style.color = '#b00020';
           statusMsg.textContent = 'Não foi possível salvar a mensagem.';
