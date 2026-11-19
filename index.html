@@ -3,14 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta por E-mail - Trilhas</title>
+  <title>Curso de Direitos Humanos e Saúde Mental - Trilhas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       max-width: 720px;
-      margin: 40px auto;
+      margin: 32px auto;
       padding: 0 16px;
       background: #f7f8fa;
+      color: #222;
+    }
+    .banner-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .banner-box img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .instrucao {
+      margin: 0 0 14px 0;
+      font-size: 15px;
+      line-height: 1.5;
       color: #222;
     }
     .card {
@@ -18,7 +36,7 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 20px;
-      margin-top: 20px;
+      margin-top: 16px;
     }
     .busca-box {
       display: flex;
@@ -79,11 +97,16 @@
 </head>
 <body>
 
-  <h1>Consulta de Respostas por E-mail</h1>
+  <div class="banner-box">
+    <img src="banner.jpg" alt="Educação em Direitos Humanos e Saúde Mental - UNIPAMPA">
+  </div>
 
   <div class="card">
+    <p class="instrucao">
+      Insira seu e-mail cadastrado no Curso de Direitos Humanos e Saúde Mental, para ter acesso as suas respostas das Trilhas do curso.
+    </p>
     <div class="busca-box">
-      <input type="email" id="emailInput" placeholder="Digite o e-mail do cursista..." required>
+      <input type="email" id="emailInput" placeholder="Digite seu e-mail cadastrado..." required>
       <button onclick="buscarEmail()">Consultar</button>
     </div>
     <div id="aviso" style="margin-top: 12px;"></div>
